@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeamTune Tech Team Scan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0f0f0f; --paper: #f5f2ec; --accent: #d4500a; --accent2: #1a3a4a; --muted: #8a8478; --border: #e2ddd6; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  .header { padding: 28px 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--paper); }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; }
+  .logo span { color: var(--accent); }
+  .logo-sub { font-size: 0.65rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-top: 2px; }
+  .progress-bar-wrap { display: flex; align-items: center; gap: 12px; font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+  .progress-track { width: 140px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .container { max-width: 680px; margin: 0 auto; padding: 60px 24px 80px; }
+  .intro { animation: fadeUp 0.6s ease both; }
+  .intro-tag { display: inline-block; background: var(--accent); color: white; font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 12px; border-radius: 2px; margin-bottom: 24px; }
+  .intro h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 20px; }
+  .intro h1 em { font-style: italic; color: var(--accent); font-weight: 700; }
+  .intro p { font-size: 1.05rem; line-height: 1.7; color: #444; margin-bottom: 16px; font-weight: 300; }
+  .intro-meta { display: flex; gap: 24px; margin: 32px 0; padding: 24px; background: var(--accent2); color: white; border-radius: 4px; }
+  .meta-item { text-align: center; flex: 1; }
+  .meta-item .num { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; display: block; }
+  .meta-item .lbl { font-size: 0.78rem; opacity: 0.7; letter-spacing: 0.05em; text-transform: uppercase; }
+  .question-screen { animation: fadeUp 0.4s ease both; }
+  .category-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 16px; }
+  .category-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .question-num { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
+  .question-text { font-family: 'Syne', sans-serif; font-size: clamp(1.2rem, 3vw, 1.55rem); font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; margin-bottom: 36px; }
+  .options-grid { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: white; border: 1.5px solid var(--border); border-radius: 4px; cursor: pointer; text-align: left; transition: all 0.15s ease; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 400; color: var(--ink); line-height: 1.4; }
+  .option-btn:hover { border-color: var(--accent); background: #fff8f5; transform: translateX(4px); }
+  .option-btn.selected { border-color: var(--accent); background: var(--accent); color: white; }
+  .option-score { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; min-width: 28px; text-align: center; color: var(--muted); }
+  .option-btn.selected .option-score { color: rgba(255,255,255,0.7); }
+  .name-screen { animation: fadeUp 0.4s ease both; }
+  .name-screen h2 { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .name-screen p { color: #555; font-size: 0.95rem; line-height: 1.6; margin-bottom: 32px; font-weight: 300; }
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 7px; }
+  .form-group input { width: 100%; padding: 13px 16px; border: 1.5px solid var(--border); border-radius: 4px; font-family: 'DM Sans', sans-serif; font-size: 1rem; background: white; color: var(--ink); outline: none; transition: border-color 0.15s; }
+  .form-group input:focus { border-color: var(--accent); }
+  .result-screen { animation: fadeUp 0.5s ease both; }
+  .result-header { margin-bottom: 36px; }
+  .result-header h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 12px; }
+  .score-hero { display: flex; align-items: center; gap: 24px; padding: 28px; background: var(--accent2); color: white; border-radius: 4px; margin-bottom: 32px; }
+  .score-circle { width: 90px; height: 90px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+  .score-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; line-height: 1; }
+  .score-max { font-size: 0.7rem; opacity: 0.6; margin-top: 2px; }
+  .score-label { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+  .score-desc { font-size: 0.88rem; opacity: 0.8; line-height: 1.5; font-weight: 300; }
+  .dimensions { display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
+  .dim-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .dim-name { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .dim-score { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--accent); }
+  .dim-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .dim-fill { height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.3s; }
+  .dim-insight { font-size: 0.82rem; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+  .cta-block { background: var(--accent); color: white; padding: 32px; border-radius: 4px; margin-bottom: 24px; }
+  .cta-block h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .cta-block p { font-size: 0.9rem; line-height: 1.6; opacity: 0.9; margin-bottom: 20px; font-weight: 300; }
+  .cta-details { display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; opacity: 0.85; margin-bottom: 24px; }
+  .cta-detail { display: flex; align-items: center; gap: 10px; }
+  .cta-detail::before { content: '->'; font-weight: 700; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: white; border: none; padding: 16px 32px; font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s ease; text-decoration: none; }
+  .btn-primary:hover { background: #b83e06; transform: translateY(-1px); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 10px; background: transparent; color: var(--ink); border: 1.5px solid var(--border); padding: 14px 28px; font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.15s; }
+  .btn-white { display: inline-flex; align-items: center; gap: 10px; background: white; color: var(--accent); border: none; padding: 14px 28px; font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s; text-decoration: none; }
+  .btn-white:hover { background: #f0ece6; }
+  .nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--border); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .hidden { display: none !important; }
+  .ri-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 5px 10px; border: 1px solid var(--border); border-radius: 2px; }
+  .ri-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; display: inline-block; }
+  .footer-note { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Team<span>Tune</span><span class="logo-sub">Tech Edition</span></div>
+  <div class="progress-bar-wrap">
+    <span id="progressLabel">Start</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div id="screen-intro" class="intro">
+    <div class="intro-tag">Tech Team Scan</div>
+    <h1>Presteert jouw<br>tech team op zijn<br><em>echte potentieel?</em></h1>
+    <p>De meeste tech teams missen niet de technische kennis — ze missen de <strong>onderlinge dynamiek</strong> om consistent te leveren. De TeamTune Tech Scan brengt in 5 minuten in kaart waar de verborgen rem zit.</p>
+    <p>Geen theorie. Direct inzicht in wat er nu speelt in jouw team.</p>
+    <div class="intro-meta">
+      <div class="meta-item"><span class="num">18</span><span class="lbl">vragen</span></div>
+      <div class="meta-item"><span class="num">6</span><span class="lbl">dimensies</span></div>
+      <div class="meta-item"><span class="num">1</span><span class="lbl">direct rapport</span></div>
+    </div>
+    <button class="btn-primary" id="startBtn">Start de scan</button>
+  </div>
+
+  <div id="screen-question" class="question-screen hidden">
+    <div class="category-badge"><div class="category-dot"></div><span id="qCategory"></span></div>
+    <div class="question-num" id="qNum"></div>
+    <div class="question-text" id="qText"></div>
+    <div class="options-grid" id="qOptions"></div>
+    <div class="nav-row">
+      <button class="btn-secondary" id="backBtn">Terug</button>
+      <button class="btn-primary" id="nextBtn" disabled>Volgende</button>
+    </div>
+  </div>
+
+  <div id="screen-name" class="name-screen hidden">
+    <div class="ri-badge">Bijna klaar</div>
+    <br><br>
+    <h2>Naar wie sturen we<br>de uitslag?</h2>
+    <p>Vul je gegevens in om je persoonlijke Tech Team Rapport te ontvangen. Geen spam - we nemen alleen contact op als jij dat wilt.</p>
+    <div class="form-group"><label>Voornaam</label><input type="text" id="inputName" placeholder="Bijv. Jan" /></div>
+    <div class="form-group"><label>Bedrijf / Team</label><input type="text" id="inputCompany" placeholder="Bijv. Acme B.V." /></div>
+    <div class="form-group"><label>E-mailadres</label><input type="email" id="inputEmail" placeholder="jouw@email.nl" /></div>
+    <div class="nav-row">
+      <button class="btn-secondary" id="nameBackBtn">Terug</button>
+      <button class="btn-primary" id="showResultBtn">Bekijk mijn resultaat</button>
+    </div>
+  </div>
+
+  <div id="screen-result" class="result-screen hidden">
+    <div class="result-header">
+      <div class="ri-badge">Jouw TeamTune Tech Rapport</div>
+      <br><br>
+      <h2>Tech team van <span id="resultName">Jan</span></h2>
+    </div>
+    <div class="score-hero">
+      <div class="score-circle">
+        <div class="score-num" id="totalScore">0</div>
+        <div class="score-max">/ 100</div>
+      </div>
+      <div>
+        <div class="score-label" id="scoreLabel"></div>
+        <div class="score-desc" id="scoreDesc"></div>
+      </div>
+    </div>
+    <div class="dimensions" id="dimensionsOutput"></div>
+    <div class="cta-block">
+      <h3>Wat laat jouw tech team liggen?</h3>
+      <p>De scan geeft je een eerste inzicht. In een gratis gesprek van 30 minuten legt TeamTune uit wat de uitslag concreet betekent voor de performance van jouw team - en wat de eerste stap is om die winst te pakken.</p>
+      <div class="cta-details">
+        <div class="cta-detail">Gratis en vrijblijvend kennismakingsgesprek</div>
+        <div class="cta-detail">Directe vertaling van jouw rapport naar actie</div>
+        <div class="cta-detail">Geen theorie - concrete eerste stap</div>
+      </div>
+      <a href="#" id="mailBtn" class="btn-white">Plan een gesprek</a>
+    </div>
+    <p class="footer-note">teamtune.nl &nbsp;|&nbsp; +31 6 53992476</p>
+  </div>
+
+</div>
+
+<script>
+var questions = [
+  // Psychologische Veiligheid
+  { cat: "Psychologische Veiligheid", text: "Teamleden bespreken een mislukte sprint, bug in productie of incident openlijk - zonder schroom of schaamte.", opts: ["Nee, fouten worden zelden besproken", "Soms, maar alleen met de manager", "Meestal wel, we leren ervan", "Ja, het is een vanzelfsprekend onderdeel van onze cultuur"] },
+  { cat: "Psychologische Veiligheid", text: "Teamleden durven een onhaalbare deadline of onrealistische sprint-scope openlijk aan te kaarten.", opts: ["Nee, dat voelt te risicovol", "Soms, maar er is altijd een drempel", "Meestal wel", "Ja, we spreken elkaar aan zonder politiek"] },
+  { cat: "Psychologische Veiligheid", text: "Als iemand een nieuwe technische aanpak of tool wil uitproberen, krijgt hij daarvoor de ruimte.", opts: ["Zelden, we doen het zoals het altijd ging", "Soms, afhankelijk van de manager", "Meestal wel", "Altijd, we moedigen experimenteren aan"] },
+
+  // Besluitvaardigheid
+  { cat: "Besluitvaardigheid", text: "Het is duidelijk wie technische beslissingen mag nemen - over architectuur, tooling of tech debt - en hoe snel dat gaat.", opts: ["Onduidelijk, dit vertraagt ons regelmatig", "Soms traag of onduidelijk", "Grotendeels helder", "Altijd snel en duidelijk"] },
+  { cat: "Besluitvaardigheid", text: "Als een project of sprint dreigt te stagneren, neemt ons team snel een beslissing over de koers.", opts: ["Nee, we blijven te lang hangen in onduidelijkheid", "Soms, maar niet consistent", "Meestal wel", "Ja, we handelen snel en duidelijk"] },
+  { cat: "Besluitvaardigheid", text: "Prioriteiten in de backlog worden actief gesteld - niet elke taak krijgt evenveel aandacht.", opts: ["Nee, iedereen doet maar wat", "Deels, maar er is weinig discipline", "Grotendeels wel", "Ja, we focussen bewust op de juiste prioriteiten"] },
+
+  // Samenwerking & Teamdynamiek
+  { cat: "Samenwerking & Teamdynamiek", text: "Teamleden delen kennis, code-reviews en oplossingen actief met elkaar.", opts: ["Nee, iedereen werkt voor zichzelf", "Soms, maar niet structureel", "Regelmatig", "Ja, kennisdeling is een teamgewoonte"] },
+  { cat: "Samenwerking & Teamdynamiek", text: "Er is geen onderlinge rivaliteit of territoriumdrang die de samenwerking schaadt - collega's gunnen elkaar succes.", opts: ["Er is duidelijk sprake van silo's of territoriumdrang", "Wisselend, per persoon", "Grotendeels goed", "Ja, we vieren elkaars succes oprecht"] },
+  { cat: "Samenwerking & Teamdynamiek", text: "Bij een complexe technische uitdaging helpen collega's elkaar - zonder dat daar altijd om gevraagd hoeft te worden.", opts: ["Zelden", "Alleen als er expliciet om gevraagd wordt", "Regelmatig", "Dit is een vanzelfsprekendheid"] },
+
+  // Delivery & Predictability
+  { cat: "Delivery & Predictability", text: "Iedereen in het team weet waar de kritieke deliverables staan en wat de verwachte opleverdatum is.", opts: ["Nee, de planning is een black box", "Soms, maar niet up-to-date", "Grotendeels wel", "Ja, volledige transparantie is de norm"] },
+  { cat: "Delivery & Predictability", text: "De planning die het team afgeeft is realistisch - geen structureel overcommitment of wishful thinking.", opts: ["Nee, we committeren structureel te veel", "Soms kloppen de schattingen niet", "Grotendeels realistisch", "Ja, onze planning is betrouwbaar"] },
+  { cat: "Delivery & Predictability", text: "Teamleden rapporteren eerlijk over vertraging of risico's, ook als het tegenzit.", opts: ["Nee, slecht nieuws wordt uitgesteld", "Soms, maar er is een drempel", "Meestal wel", "Ja, we communiceren proactief over tegenslagen"] },
+
+  // Communicatie & Leiderschap
+  { cat: "Communicatie & Leiderschap", text: "De tech lead of manager geeft regelmatig concrete en eerlijke feedback op individuele bijdragen.", opts: ["Zelden of alleen bij problemen", "Soms, maar niet structureel", "Regelmatig", "Ja, feedback is een wekelijkse gewoonte"] },
+  { cat: "Communicatie & Leiderschap", text: "De doelstellingen en prioriteiten voor het team zijn helder - iedereen weet wat er van hem verwacht wordt.", opts: ["Nee, er is veel onduidelijkheid", "Soms wisselen de prioriteiten te snel", "Grotendeels duidelijk", "Ja, iedereen weet precies waar hij aan toe is"] },
+  { cat: "Communicatie & Leiderschap", text: "Teamleden weten hoe ze omgaan met wisselende stakeholderverwachtingen of scope-aanpassingen - er is een gedeelde aanpak.", opts: ["Nee, iedereen improviseert", "Er zijn globale richtlijnen maar weinig discipline", "Er is een aanpak, die wordt redelijk gevolgd", "Ja, we hebben een scherpe en gedeelde werkwijze"] },
+
+  // Kwaliteit & Prestatiecultuur
+  { cat: "Kwaliteit & Prestatiecultuur", text: "Ons team levert consistent goede kwaliteit - niet alleen bij rustige periodes, maar ook onder deadline-druk.", opts: ["Nee, kwaliteit is wisselend en voorspelbaar slecht onder druk", "Wisselend, afhankelijk van de periode", "Grotendeels wel", "Ja, we presteren consistent onder alle omstandigheden"] },
+  { cat: "Kwaliteit & Prestatiecultuur", text: "Als de kwaliteit tegenvalt of een sprint mislukt, wordt dat geanalyseerd en omgezet in concrete actie.", opts: ["Nee, tegenslagen worden snel vergeten", "Soms, maar niet structureel", "Meestal wel", "Ja, we leren en handelen altijd snel"] },
+  { cat: "Kwaliteit & Prestatiecultuur", text: "Individuele bijdragen en kwaliteitsnormen zijn zichtbaar voor het team - iedereen weet wie bijdraagt en wie achterblijft.", opts: ["Nee, prestaties zijn niet transparant", "Deels, maar niet consistent", "Grotendeels wel", "Ja, volledige transparantie motiveert ons team"] }
+];
+
+var dimensions = [
+  { name: "Psychologische Veiligheid", qi: [0,1,2], color: "#d4500a" },
+  { name: "Besluitvaardigheid", qi: [3,4,5], color: "#1a3a4a" },
+  { name: "Samenwerking & Teamdynamiek", qi: [6,7,8], color: "#6b7c5a" },
+  { name: "Delivery & Predictability", qi: [9,10,11], color: "#8b5e3c" },
+  { name: "Communicatie & Leiderschap", qi: [12,13,14], color: "#4a6080" },
+  { name: "Kwaliteit & Prestatiecultuur", qi: [15,16,17], color: "#7a4a7a" }
+];
+
+var insights = {
+  "Psychologische Veiligheid": [
+    "Fouten en incidenten worden niet besproken - dat kost het team groeikansen en herhaalt problemen.",
+    "Er is een drempel om eerlijk te zijn over tegenslagen of mislukkingen.",
+    "Goede basis - verdiepen op openheid en psychologische veiligheid loont.",
+    "Sterk: het team leert samen van succes en mislukking."
+  ],
+  "Besluitvaardigheid": [
+    "Trage besluitvorming over tech-keuzes vertraagt delivery en frustreert het team.",
+    "Onduidelijkheid over wie wat mag beslissen remt de voortgang.",
+    "Grotendeels op orde, scherpere eigenaarschap is mogelijk.",
+    "Snel en helder - dit geeft het team een duidelijk voordeel in executie."
+  ],
+  "Samenwerking & Teamdynamiek": [
+    "Silo-gedrag en territoriumdrang remmen de collectieve output.",
+    "Er is potentie, maar samenwerking en kennisdeling zijn niet de norm.",
+    "Goede teamspirit, kleine blinde vlekken in samenwerking.",
+    "Sterk collectief - het team maakt elkaar beter."
+  ],
+  "Delivery & Predictability": [
+    "De planning is een black box - dat maakt sturen en vertrouwen opbouwen onmogelijk.",
+    "Delivery is niet betrouwbaar genoeg om op te sturen of verwachtingen te managen.",
+    "Redelijke predictability, verdere scherpte en transparantie loont.",
+    "Betrouwbare delivery - een solide basis voor vertrouwen met stakeholders."
+  ],
+  "Communicatie & Leiderschap": [
+    "Onduidelijke verwachtingen leiden tot versnipperde focus en frustratie.",
+    "Feedback en richting zijn te inconsistent om op te bouwen.",
+    "Grotendeels helder, kleine verbeterpunten in consistentie.",
+    "Helder leiderschap en sterke communicatiecultuur."
+  ],
+  "Kwaliteit & Prestatiecultuur": [
+    "Kwaliteit is structureel onder druk - de prestatiecultuur vraagt om een reset.",
+    "Resultaten zijn wisselend - er is geen consistente standaard voor kwaliteit.",
+    "Solide prestatiecultuur, maar er is ruimte voor meer consistentie onder druk.",
+    "Sterke kwaliteitscultuur - het team levert consistent en leert van tegenslagen."
+  ]
+};
+
+var answers = new Array(18).fill(null);
+var currentQ = 0;
+var scanResult = {};
+
+function startSurvey() { showScreen('question'); renderQuestion(); }
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('startBtn').addEventListener('click', startSurvey);
+  document.getElementById('backBtn').addEventListener('click', goBack);
+  document.getElementById('nextBtn').addEventListener('click', goNext);
+  document.getElementById('nameBackBtn').addEventListener('click', function() { showScreen('question'); });
+  document.getElementById('showResultBtn').addEventListener('click', showResult);
+  document.getElementById('mailBtn').addEventListener('click', openMailTo);
+});
+
+function showScreen(name) {
+  ['intro','question','name','result'].forEach(function(s) {
+    document.getElementById('screen-' + s).classList.add('hidden');
+  });
+  document.getElementById('screen-' + name).classList.remove('hidden');
+  updateProgress(name);
+}
+
+function updateProgress(screen) {
+  var fill = document.getElementById('progressFill');
+  var label = document.getElementById('progressLabel');
+  if (screen === 'intro') { fill.style.width = '0%'; label.textContent = 'Start'; }
+  else if (screen === 'question') { fill.style.width = Math.round((currentQ / 18) * 80) + '%'; label.textContent = (currentQ + 1) + ' / 18'; }
+  else if (screen === 'name') { fill.style.width = '85%'; label.textContent = 'Bijna klaar'; }
+  else if (screen === 'result') { fill.style.width = '100%'; label.textContent = 'Klaar!'; }
+}
+
+function renderQuestion() {
+  var q = questions[currentQ];
+  document.getElementById('qCategory').textContent = q.cat;
+  document.getElementById('qNum').textContent = 'Vraag ' + (currentQ + 1) + ' van ' + questions.length;
+  document.getElementById('qText').textContent = q.text;
+  var container = document.getElementById('qOptions');
+  container.innerHTML = '';
+  q.opts.forEach(function(opt, i) {
+    var btn = document.createElement('button');
+    btn.className = 'option-btn' + (answers[currentQ] === i ? ' selected' : '');
+    btn.innerHTML = '<span class="option-score">' + (i + 1) + '</span><span>' + opt + '</span>';
+    btn.onclick = (function(idx) { return function() { selectOption(idx); }; })(i);
+    container.appendChild(btn);
+  });
+  document.getElementById('nextBtn').disabled = answers[currentQ] === null;
+  document.getElementById('backBtn').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+  updateProgress('question');
+}
+
+function selectOption(i) {
+  answers[currentQ] = i;
+  document.querySelectorAll('.option-btn').forEach(function(b, idx) { b.classList.toggle('selected', idx === i); });
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function goNext() {
+  if (answers[currentQ] === null) return;
+  if (currentQ < questions.length - 1) { currentQ++; renderQuestion(); window.scrollTo(0,0); }
+  else { showScreen('name'); window.scrollTo(0,0); }
+}
+
+function goBack() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); window.scrollTo(0,0); }
+}
+
+function submitToFormspree(data) {
+  fetch('https://formspree.io/f/xpqkzvpj', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(function(err) { console.log('Formspree error:', err); });
+}
+
+function showResult() {
+  var name = document.getElementById('inputName').value || 'jouw team';
+  var company = document.getElementById('inputCompany').value || '';
+  var email = document.getElementById('inputEmail').value || '';
+  document.getElementById('resultName').textContent = name;
+
+  var dimScores = dimensions.map(function(dim) {
+    var raw = dim.qi.reduce(function(sum, qi) { return sum + (answers[qi] || 0); }, 0);
+    return Math.round((raw / (dim.qi.length * 3)) * 100);
+  });
+
+  var total = Math.round(dimScores.reduce(function(a, b) { return a + b; }, 0) / dimScores.length);
+  document.getElementById('totalScore').textContent = total;
+
+  var label, desc;
+  if (total < 35) { label = "Rem op de groei"; desc = "De onderlinge dynamiek kost dit tech team aantoonbaar output en kwaliteit. Er liggen concrete kansen om de performance direct te verhogen."; }
+  else if (total < 55) { label = "Onder het potentieel"; desc = "Het team heeft de technische skills, maar de onderstroom remt de output. Met gerichte coaching is snel winst te behalen."; }
+  else if (total < 75) { label = "Solide basis"; desc = "Het team presteert redelijk, maar er zijn blinde vlekken die consistentie in de weg staan."; }
+  else { label = "Sterk tech team"; desc = "Sterke basis van vertrouwen en samenwerking. De uitdaging is nu consistent blijven presteren onder druk en de kwaliteit borgen."; }
+
+  document.getElementById('scoreLabel').textContent = label;
+  document.getElementById('scoreDesc').textContent = desc;
+
+  scanResult = { name: name, company: company, email: email, total: total, label: label, dimScores: dimScores };
+
+  var formData = { Naam: name, Bedrijf: company, Email: email, Totaalscore: total + '% - ' + label, Type: 'Tech Team Scan' };
+  dimensions.forEach(function(dim, i) { formData[dim.name] = dimScores[i] + '%'; });
+  submitToFormspree(formData);
+
+  var container = document.getElementById('dimensionsOutput');
+  container.innerHTML = '';
+  dimensions.forEach(function(dim, i) {
+    var score = dimScores[i];
+    var insight = insights[dim.name][Math.min(Math.floor(score / 25), 3)];
+    var div = document.createElement('div');
+    div.innerHTML = '<div class="dim-header"><span class="dim-name">' + dim.name + '</span><span class="dim-score">' + score + '%</span></div>' +
+      '<div class="dim-track"><div class="dim-fill" style="width:0%;background:' + dim.color + '" data-width="' + score + '%"></div></div>' +
+      '<div class="dim-insight">' + insight + '</div>';
+    container.appendChild(div);
+  });
+
+  showScreen('result');
+  window.scrollTo(0, 0);
+  setTimeout(function() {
+    document.querySelectorAll('.dim-fill').forEach(function(el) { el.style.width = el.dataset.width; });
+  }, 100);
+}
+
+function openMailTo(e) {
+  e.preventDefault();
+  var r = scanResult;
+  var to = ['info', 'teamtune.nl'].join('@');
+  var dimLines = dimensions.map(function(d, i) { return d.name + ': ' + r.dimScores[i] + '%'; }).join('\n');
+  var subject = 'TeamTune Tech Scan - ' + r.name + (r.company ? ' (' + r.company + ')' : '') + ' - Score: ' + r.total + '%';
+  var body = 'Hoi,\n\nIk heb zojuist de TeamTune Tech Team Scan ingevuld en wil graag de uitslag bespreken.\n\n' +
+    '--- GEGEVENS INVULLER ---\n' +
+    'Naam: ' + (r.name || '-') + '\n' +
+    'Bedrijf: ' + (r.company || '-') + '\n' +
+    'E-mail: ' + (r.email || '-') + '\n\n' +
+    '--- UITSLAG ---\n' +
+    'Totaalscore: ' + r.total + '% - ' + r.label + '\n\n' +
+    '--- SCORES PER DIMENSIE ---\n' +
+    dimLines + '\n\n' +
+    'Graag plan ik een kort gesprekje in.\n\nMet vriendelijke groet,\n' + (r.name || '');
+  window.location.href = 'mailto:' + to + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+}
+</script>
+</body>
+</html>
