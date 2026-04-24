@@ -77,6 +77,19 @@
   .ri-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 5px 10px; border: 1px solid var(--border); border-radius: 2px; }
   .ri-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; display: inline-block; }
   .footer-note { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 16px; }
+
+  /* Financiële hook */
+  .finance-hook { background: var(--ink); color: white; border-radius: 4px; padding: 28px 32px; margin-bottom: 20px; animation: fadeUp 0.6s ease 0.4s both; }
+  .finance-hook-label { display: inline-flex; align-items: center; gap: 8px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); margin-bottom: 14px; }
+  .finance-hook-label::before { content: ''; display: inline-block; width: 18px; height: 2px; background: var(--accent); }
+  .finance-hook h4 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 14px; }
+  .finance-hook-text { font-size: 0.88rem; line-height: 1.7; opacity: 0.82; font-weight: 300; margin-bottom: 20px; }
+  .finance-hook-items { display: flex; flex-direction: column; gap: 10px; }
+  .finance-hook-item { display: flex; align-items: flex-start; gap: 12px; font-size: 0.84rem; line-height: 1.5; opacity: 0.9; }
+  .finance-hook-item-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: rgba(212,80,10,0.25); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .finance-hook-item-icon svg { width: 11px; height: 11px; fill: var(--accent); }
+  .finance-hook-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 18px 0; }
+  .finance-hook-footer { font-size: 0.8rem; opacity: 0.55; font-style: italic; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -93,8 +106,8 @@
 
   <div id="screen-intro" class="intro">
     <div class="intro-tag">Tech Team Scan</div>
-    <h1>Presteert jouw<br>tech team op zijn<br><em>echte potentieel?</em></h1>
-    <p>De meeste tech teams missen niet de technische kennis — ze missen de <strong>onderlinge dynamiek</strong> om consistent te leveren. De TeamTune Tech Scan brengt in 5 minuten in kaart waar de verborgen rem zit.</p>
+    <h1>Presteert jouw<br>techteam op zijn<br><em>echte potentieel?</em></h1>
+    <p>De meeste techteams missen niet de technische skills — ze missen de <strong>onderlinge dynamiek</strong> om consistent te leveren. De TeamTune Tech Scan brengt in 5 minuten in kaart waar de verborgen rem zit.</p>
     <p>Geen theorie. Direct inzicht in wat er nu speelt in jouw team.</p>
     <div class="intro-meta">
       <div class="meta-item"><span class="num">18</span><span class="lbl">vragen</span></div>
@@ -119,7 +132,7 @@
     <div class="ri-badge">Bijna klaar</div>
     <br><br>
     <h2>Naar wie sturen we<br>de uitslag?</h2>
-    <p>Vul je gegevens in om je persoonlijke Tech Team Rapport te ontvangen. Geen spam - we nemen alleen contact op als jij dat wilt.</p>
+    <p>Vul je gegevens in om je persoonlijke Sales Team Rapport te ontvangen. Geen spam - we nemen alleen contact op als jij dat wilt.</p>
     <div class="form-group"><label>Voornaam</label><input type="text" id="inputName" placeholder="Bijv. Jan" /></div>
     <div class="form-group"><label>Bedrijf / Team</label><input type="text" id="inputCompany" placeholder="Bijv. Acme B.V." /></div>
     <div class="form-group"><label>E-mailadres</label><input type="email" id="inputEmail" placeholder="jouw@email.nl" /></div>
@@ -133,7 +146,7 @@
     <div class="result-header">
       <div class="ri-badge">Jouw TeamTune Tech Rapport</div>
       <br><br>
-      <h2>Tech team van <span id="resultName">Jan</span></h2>
+      <h2>Salesteam van <span id="resultName">Jan</span></h2>
     </div>
     <div class="score-hero">
       <div class="score-circle">
@@ -146,8 +159,9 @@
       </div>
     </div>
     <div class="dimensions" id="dimensionsOutput"></div>
+    <div class="finance-hook" id="financeHook"></div>
     <div class="cta-block">
-      <h3>Wat laat jouw tech team liggen?</h3>
+      <h3>Wat laat jouw salesteam liggen?</h3>
       <p>De scan geeft je een eerste inzicht. In een gratis gesprek van 30 minuten legt TeamTune uit wat de uitslag concreet betekent voor de performance van jouw team - en wat de eerste stap is om die winst te pakken.</p>
       <div class="cta-details">
         <div class="cta-detail">Gratis en vrijblijvend kennismakingsgesprek</div>
@@ -164,39 +178,39 @@
 <script>
 var questions = [
   // Psychologische Veiligheid
-  { cat: "Psychologische Veiligheid", text: "Teamleden bespreken een mislukte sprint, bug in productie of incident openlijk - zonder schroom of schaamte.", opts: ["Nee, fouten worden zelden besproken", "Soms, maar alleen met de manager", "Meestal wel, we leren ervan", "Ja, het is een vanzelfsprekend onderdeel van onze cultuur"] },
-  { cat: "Psychologische Veiligheid", text: "Teamleden durven een onhaalbare deadline of onrealistische sprint-scope openlijk aan te kaarten.", opts: ["Nee, dat voelt te risicovol", "Soms, maar er is altijd een drempel", "Meestal wel", "Ja, we spreken elkaar aan zonder politiek"] },
-  { cat: "Psychologische Veiligheid", text: "Als iemand een nieuwe technische aanpak of tool wil uitproberen, krijgt hij daarvoor de ruimte.", opts: ["Zelden, we doen het zoals het altijd ging", "Soms, afhankelijk van de manager", "Meestal wel", "Altijd, we moedigen experimenteren aan"] },
+  { cat: "Psychologische Veiligheid", text: "Teamleden bespreken een mislukte sprint of een productiefout openlijk — zonder schroom of schaamte.", opts: ["Nee, fouten worden zelden besproken", "Soms, maar alleen met de tech lead", "Meestal wel, we leren ervan", "Ja, het is een vanzelfsprekend onderdeel van onze cultuur"] },
+  { cat: "Psychologische Veiligheid", text: "Developers durven onrealistische deadlines of een slechte architectuurkeuze openlijk aan te kaarten.", opts: ["Nee, dat voelt te risicovol", "Soms, maar er is altijd een drempel", "Meestal wel", "Ja, we spreken elkaar aan zonder politiek"] },
+  { cat: "Psychologische Veiligheid", text: "Als iemand een nieuwe technologie of aanpak wil proberen, krijgt hij daarvoor de ruimte.", opts: ["Zelden, we doen het zoals het altijd ging", "Soms, afhankelijk van de manager", "Meestal wel", "Altijd, we moedigen experimenteren aan"] },
 
-  // Besluitvaardigheid
-  { cat: "Besluitvaardigheid", text: "Het is duidelijk wie technische beslissingen mag nemen - over architectuur, tooling of tech debt - en hoe snel dat gaat.", opts: ["Onduidelijk, dit vertraagt ons regelmatig", "Soms traag of onduidelijk", "Grotendeels helder", "Altijd snel en duidelijk"] },
-  { cat: "Besluitvaardigheid", text: "Als een project of sprint dreigt te stagneren, neemt ons team snel een beslissing over de koers.", opts: ["Nee, we blijven te lang hangen in onduidelijkheid", "Soms, maar niet consistent", "Meestal wel", "Ja, we handelen snel en duidelijk"] },
-  { cat: "Besluitvaardigheid", text: "Prioriteiten in de backlog worden actief gesteld - niet elke taak krijgt evenveel aandacht.", opts: ["Nee, iedereen doet maar wat", "Deels, maar er is weinig discipline", "Grotendeels wel", "Ja, we focussen bewust op de juiste prioriteiten"] },
+  // Technische Besluitvorming
+  { cat: "Technische Besluitvorming", text: "Het is duidelijk wie beslissingen neemt over architectuur, toolkeuze of tech debt — en hoe snel dat gaat.", opts: ["Onduidelijk, dit vertraagt ons regelmatig", "Soms traag of onduidelijk", "Grotendeels helder", "Altijd snel en duidelijk"] },
+  { cat: "Technische Besluitvorming", text: "Als een technisch vraagstuk of blocker opduikt, neemt het team snel een beslissing over de aanpak.", opts: ["Nee, issues blijven te lang hangen", "Soms, maar niet consistent", "Meestal wel", "Ja, we handelen snel en duidelijk"] },
+  { cat: "Technische Besluitvorming", text: "Prioriteiten in de backlog worden actief gesteld — niet elke taak krijgt evenveel aandacht.", opts: ["Nee, iedereen werkt aan wat hij wil", "Deels, maar er is weinig discipline", "Grotendeels wel", "Ja, we focussen bewust op de juiste taken"] },
 
   // Samenwerking & Teamdynamiek
-  { cat: "Samenwerking & Teamdynamiek", text: "Teamleden delen kennis, code-reviews en oplossingen actief met elkaar.", opts: ["Nee, iedereen werkt voor zichzelf", "Soms, maar niet structureel", "Regelmatig", "Ja, kennisdeling is een teamgewoonte"] },
-  { cat: "Samenwerking & Teamdynamiek", text: "Er is geen onderlinge rivaliteit of territoriumdrang die de samenwerking schaadt - collega's gunnen elkaar succes.", opts: ["Er is duidelijk sprake van silo's of territoriumdrang", "Wisselend, per persoon", "Grotendeels goed", "Ja, we vieren elkaars succes oprecht"] },
-  { cat: "Samenwerking & Teamdynamiek", text: "Bij een complexe technische uitdaging helpen collega's elkaar - zonder dat daar altijd om gevraagd hoeft te worden.", opts: ["Zelden", "Alleen als er expliciet om gevraagd wordt", "Regelmatig", "Dit is een vanzelfsprekendheid"] },
+  { cat: "Samenwerking & Teamdynamiek", text: "Teamleden delen oplossingen, code-patronen of aanpakken actief met elkaar.", opts: ["Nee, iedereen werkt voor zichzelf", "Soms, maar niet structureel", "Regelmatig", "Ja, kennisdeling is een teamgewoonte"] },
+  { cat: "Samenwerking & Teamdynamiek", text: "Er is geen onderlinge rivaliteit of silo-gedrag die de samenwerking schaadt.", opts: ["Er is duidelijk sprake van silo's of competitie", "Wisselend, per persoon", "Grotendeels goed", "Ja, we werken als één team"] },
+  { cat: "Samenwerking & Teamdynamiek", text: "Bij een complexe technische uitdaging helpen collega's elkaar — zonder dat daar altijd om gevraagd hoeft te worden.", opts: ["Zelden", "Alleen als er expliciet om gevraagd wordt", "Regelmatig", "Dit is een vanzelfsprekendheid"] },
 
   // Delivery & Predictability
-  { cat: "Delivery & Predictability", text: "Iedereen in het team weet waar de kritieke deliverables staan en wat de verwachte opleverdatum is.", opts: ["Nee, de planning is een black box", "Soms, maar niet up-to-date", "Grotendeels wel", "Ja, volledige transparantie is de norm"] },
-  { cat: "Delivery & Predictability", text: "De planning die het team afgeeft is realistisch - geen structureel overcommitment of wishful thinking.", opts: ["Nee, we committeren structureel te veel", "Soms kloppen de schattingen niet", "Grotendeels realistisch", "Ja, onze planning is betrouwbaar"] },
-  { cat: "Delivery & Predictability", text: "Teamleden rapporteren eerlijk over vertraging of risico's, ook als het tegenzit.", opts: ["Nee, slecht nieuws wordt uitgesteld", "Soms, maar er is een drempel", "Meestal wel", "Ja, we communiceren proactief over tegenslagen"] },
+  { cat: "Delivery & Predictability", text: "Iedereen in het team weet wat de status is van lopende taken en wanneer ze worden opgeleverd.", opts: ["Nee, de planning is een black box", "Soms, maar niet up-to-date", "Grotendeels wel", "Ja, volledige transparantie is de norm"] },
+  { cat: "Delivery & Predictability", text: "De sprint planning of delivery forecast is realistisch — geen wishful thinking of structurele overcommitment.", opts: ["Nee, we committeren structureel te veel", "Soms kloppen de schattingen niet", "Grotendeels realistisch", "Ja, onze planning is betrouwbaar"] },
+  { cat: "Delivery & Predictability", text: "Teamleden communiceren proactief als een taak dreigt uit te lopen of vast te lopen.", opts: ["Nee, vertraging wordt uitgesteld gemeld", "Soms, maar er is een drempel", "Meestal wel", "Ja, we communiceren proactief over blokkades"] },
 
   // Communicatie & Leiderschap
   { cat: "Communicatie & Leiderschap", text: "De tech lead of manager geeft regelmatig concrete en eerlijke feedback op individuele bijdragen.", opts: ["Zelden of alleen bij problemen", "Soms, maar niet structureel", "Regelmatig", "Ja, feedback is een wekelijkse gewoonte"] },
-  { cat: "Communicatie & Leiderschap", text: "De doelstellingen en prioriteiten voor het team zijn helder - iedereen weet wat er van hem verwacht wordt.", opts: ["Nee, er is veel onduidelijkheid", "Soms wisselen de prioriteiten te snel", "Grotendeels duidelijk", "Ja, iedereen weet precies waar hij aan toe is"] },
-  { cat: "Communicatie & Leiderschap", text: "Teamleden weten hoe ze omgaan met wisselende stakeholderverwachtingen of scope-aanpassingen - er is een gedeelde aanpak.", opts: ["Nee, iedereen improviseert", "Er zijn globale richtlijnen maar weinig discipline", "Er is een aanpak, die wordt redelijk gevolgd", "Ja, we hebben een scherpe en gedeelde werkwijze"] },
+  { cat: "Communicatie & Leiderschap", text: "De doelstellingen en prioriteiten voor het team zijn helder — iedereen weet wat er van hem verwacht wordt.", opts: ["Nee, er is veel onduidelijkheid", "Soms wisselen de prioriteiten te snel", "Grotendeels duidelijk", "Ja, iedereen weet precies waar hij aan toe is"] },
+  { cat: "Communicatie & Leiderschap", text: "Technische beslissingen worden goed gecommuniceerd naar stakeholders — er zijn geen verrassingen richting het management of de klant.", opts: ["Nee, communicatie is reactief en fragmentarisch", "Er zijn globale afspraken maar weinig discipline", "Er is een aanpak die redelijk gevolgd wordt", "Ja, we hebben heldere en gedeelde communicatieritmes"] },
 
   // Kwaliteit & Prestatiecultuur
-  { cat: "Kwaliteit & Prestatiecultuur", text: "Ons team levert consistent goede kwaliteit - niet alleen bij rustige periodes, maar ook onder deadline-druk.", opts: ["Nee, kwaliteit is wisselend en voorspelbaar slecht onder druk", "Wisselend, afhankelijk van de periode", "Grotendeels wel", "Ja, we presteren consistent onder alle omstandigheden"] },
-  { cat: "Kwaliteit & Prestatiecultuur", text: "Als de kwaliteit tegenvalt of een sprint mislukt, wordt dat geanalyseerd en omgezet in concrete actie.", opts: ["Nee, tegenslagen worden snel vergeten", "Soms, maar niet structureel", "Meestal wel", "Ja, we leren en handelen altijd snel"] },
-  { cat: "Kwaliteit & Prestatiecultuur", text: "Individuele bijdragen en kwaliteitsnormen zijn zichtbaar voor het team - iedereen weet wie bijdraagt en wie achterblijft.", opts: ["Nee, prestaties zijn niet transparant", "Deels, maar niet consistent", "Grotendeels wel", "Ja, volledige transparantie motiveert ons team"] }
+  { cat: "Kwaliteit & Prestatiecultuur", text: "Ons team levert consistent goede kwaliteit — niet alleen als er tijd is, maar ook onder druk.", opts: ["Nee, kwaliteit lijdt structureel onder tijdsdruk", "Wisselend, afhankelijk van de sprint", "Grotendeels wel", "Ja, kwaliteit is een non-negotiable voor ons team"] },
+  { cat: "Kwaliteit & Prestatiecultuur", text: "Als er technische schuld of kwaliteitsproblemen zijn, wordt dat geanalyseerd en omgezet in concrete actie.", opts: ["Nee, problemen worden snel vergeten", "Soms, maar niet structureel", "Meestal wel", "Ja, we leren en handelen altijd snel"] },
+  { cat: "Kwaliteit & Prestatiecultuur", text: "Individuele bijdragen en technische kwaliteit zijn zichtbaar voor het team — iedereen weet wie bijdraagt en wie achterblijft.", opts: ["Nee, bijdragen zijn niet transparant", "Deels, maar niet consistent", "Grotendeels wel", "Ja, transparantie motiveert ons team"] }
 ];
 
 var dimensions = [
   { name: "Psychologische Veiligheid", qi: [0,1,2], color: "#d4500a" },
-  { name: "Besluitvaardigheid", qi: [3,4,5], color: "#1a3a4a" },
+  { name: "Technische Besluitvorming", qi: [3,4,5], color: "#1a3a4a" },
   { name: "Samenwerking & Teamdynamiek", qi: [6,7,8], color: "#6b7c5a" },
   { name: "Delivery & Predictability", qi: [9,10,11], color: "#8b5e3c" },
   { name: "Communicatie & Leiderschap", qi: [12,13,14], color: "#4a6080" },
@@ -204,42 +218,12 @@ var dimensions = [
 ];
 
 var insights = {
-  "Psychologische Veiligheid": [
-    "Fouten en incidenten worden niet besproken - dat kost het team groeikansen en herhaalt problemen.",
-    "Er is een drempel om eerlijk te zijn over tegenslagen of mislukkingen.",
-    "Goede basis - verdiepen op openheid en psychologische veiligheid loont.",
-    "Sterk: het team leert samen van succes en mislukking."
-  ],
-  "Besluitvaardigheid": [
-    "Trage besluitvorming over tech-keuzes vertraagt delivery en frustreert het team.",
-    "Onduidelijkheid over wie wat mag beslissen remt de voortgang.",
-    "Grotendeels op orde, scherpere eigenaarschap is mogelijk.",
-    "Snel en helder - dit geeft het team een duidelijk voordeel in executie."
-  ],
-  "Samenwerking & Teamdynamiek": [
-    "Silo-gedrag en territoriumdrang remmen de collectieve output.",
-    "Er is potentie, maar samenwerking en kennisdeling zijn niet de norm.",
-    "Goede teamspirit, kleine blinde vlekken in samenwerking.",
-    "Sterk collectief - het team maakt elkaar beter."
-  ],
-  "Delivery & Predictability": [
-    "De planning is een black box - dat maakt sturen en vertrouwen opbouwen onmogelijk.",
-    "Delivery is niet betrouwbaar genoeg om op te sturen of verwachtingen te managen.",
-    "Redelijke predictability, verdere scherpte en transparantie loont.",
-    "Betrouwbare delivery - een solide basis voor vertrouwen met stakeholders."
-  ],
-  "Communicatie & Leiderschap": [
-    "Onduidelijke verwachtingen leiden tot versnipperde focus en frustratie.",
-    "Feedback en richting zijn te inconsistent om op te bouwen.",
-    "Grotendeels helder, kleine verbeterpunten in consistentie.",
-    "Helder leiderschap en sterke communicatiecultuur."
-  ],
-  "Kwaliteit & Prestatiecultuur": [
-    "Kwaliteit is structureel onder druk - de prestatiecultuur vraagt om een reset.",
-    "Resultaten zijn wisselend - er is geen consistente standaard voor kwaliteit.",
-    "Solide prestatiecultuur, maar er is ruimte voor meer consistentie onder druk.",
-    "Sterke kwaliteitscultuur - het team levert consistent en leert van tegenslagen."
-  ]
+  "Psychologische Veiligheid": ["Fouten worden niet besproken — dat kost het team groeikansen en herhaalt bugs.", "Er is een drempel om eerlijk te zijn over technische problemen.", "Goede basis — verdiepen op openheid versnelt het leerproces.", "Sterk: het team leert samen van successen en mislukkingen."],
+  "Technische Besluitvorming": ["Onduidelijke besluitvorming vertraagt delivery en frustreert het team.", "Beslissingen over architectuur en tooling duren te lang.", "Grotendeels op orde, scherpere eigenaarschap mogelijk.", "Snel en helder — dit geeft een competitief voordeel in delivery."],
+  "Samenwerking & Teamdynamiek": ["Silo-gedrag remt de collectieve output en kwaliteit.", "Er is potentie, maar samenwerking is niet de norm.", "Goede teamspirit, kleine blinde vlekken.", "Sterk collectief — het team maakt elkaar technisch beter."],
+  "Delivery & Predictability": ["De planning is een black box — dat maakt sturen onmogelijk.", "Forecasting is niet betrouwbaar genoeg om op te sturen.", "Redelijke transparantie, verdere scherpte loont.", "Betrouwbare delivery — een solide basis voor stakeholdervertrouwen."],
+  "Communicatie & Leiderschap": ["Onduidelijke verwachtingen leiden tot versnipperde focus.", "Feedback en richting zijn te inconsistent.", "Grotendeels helder, kleine verbeterpunten.", "Helder leiderschap en sterke communicatiecultuur."],
+  "Kwaliteit & Prestatiecultuur": ["Kwaliteit staat structureel onder druk — technische schuld stapelt op.", "Resultaten zijn wisselend — er is geen consistente kwaliteitscultuur.", "Solide basis, maar er is ruimte voor meer consistentie onder druk.", "Sterke prestatiecultuur — het team levert consistent en leert van fouten."]
 };
 
 var answers = new Array(18).fill(null);
@@ -332,17 +316,18 @@ function showResult() {
   document.getElementById('totalScore').textContent = total;
 
   var label, desc;
-  if (total < 35) { label = "Rem op de groei"; desc = "De onderlinge dynamiek kost dit tech team aantoonbaar output en kwaliteit. Er liggen concrete kansen om de performance direct te verhogen."; }
-  else if (total < 55) { label = "Onder het potentieel"; desc = "Het team heeft de technische skills, maar de onderstroom remt de output. Met gerichte coaching is snel winst te behalen."; }
-  else if (total < 75) { label = "Solide basis"; desc = "Het team presteert redelijk, maar er zijn blinde vlekken die consistentie in de weg staan."; }
-  else { label = "Sterk tech team"; desc = "Sterke basis van vertrouwen en samenwerking. De uitdaging is nu consistent blijven presteren onder druk en de kwaliteit borgen."; }
+  if (total < 35) { label = "Rem op de delivery"; desc = "De onderlinge dynamiek kost dit techteam aantoonbaar output. Er liggen concrete kansen om de performance en kwaliteit direct te verhogen."; }
+  else if (total < 55) { label = "Onder het potentieel"; desc = "Het team heeft de skills, maar de onderstroom remt de delivery. Met gerichte coaching is snel winst te behalen."; }
+  else if (total < 75) { label = "Solide basis"; desc = "Het team levert redelijk, maar er zijn blinde vlekken die consistentie in de weg staan."; }
+  else { label = "Sterk techteam"; desc = "Sterke basis van vertrouwen en samenwerking. De uitdaging is nu consistent blijven leveren onder druk en bij wisselingen."; }
 
   document.getElementById('scoreLabel').textContent = label;
   document.getElementById('scoreDesc').textContent = desc;
 
   scanResult = { name: name, company: company, email: email, total: total, label: label, dimScores: dimScores };
 
-  var formData = { Naam: name, Bedrijf: company, Email: email, Totaalscore: total + '% - ' + label, Type: 'Tech Team Scan' };
+  // Verstuur automatisch naar TeamTune via Formspree
+  var formData = { Naam: name, Bedrijf: company, Email: email, Totaalscore: total + '% - ' + label };
   dimensions.forEach(function(dim, i) { formData[dim.name] = dimScores[i] + '%'; });
   submitToFormspree(formData);
 
@@ -358,11 +343,80 @@ function showResult() {
     container.appendChild(div);
   });
 
+  // Financiële hook genereren
+  renderFinanceHook(total, dimScores, name, company);
+
   showScreen('result');
   window.scrollTo(0, 0);
   setTimeout(function() {
     document.querySelectorAll('.dim-fill').forEach(function(el) { el.style.width = el.dataset.width; });
   }, 100);
+}
+
+function renderFinanceHook(total, dimScores, name, company) {
+  // Vind de twee laagst scorende dimensies
+  var ranked = dimScores.map(function(s, i) { return { i: i, s: s }; }).sort(function(a, b) { return a.s - b.s; });
+  var worst = ranked[0];
+  var second = ranked[1];
+  var worstName = dimensions[worst.i].name;
+  var secondName = dimensions[second.i].name;
+  var teamLabel = company ? 'het salesteam van ' + company : (name ? 'het team van ' + name : 'jullie salesteam');
+
+  // Hook teksten per scorerange
+  var title, body, items, footer;
+
+  if (total < 35) {
+    title = 'Wat dit kost — in euro\'s';
+    body = 'Een score van ' + total + '% is geen soft signaal — het heeft een directe kostenkant. ' +
+      worstName + ' en ' + secondName + ' scoren het laagst. Dat zijn precies de gebieden waar techteams energie verliezen die rechtstreeks van invloed is op delivery en kwaliteit.';
+    items = [
+      'Eén developer die vertrekt kost gemiddeld een half tot heel jaarsalaris aan werving, inwerken en kennisoverdracht — en neemt kritische systeemkennis mee.',
+      'Teams met lage psychologische veiligheid rapporteren bugs en blockers later — elke dag vertraging in een productie-issue kost gemiddeld €500–2.000 aan herstelkosten en reputatieschade.',
+      'Tech debt die niet besproken wordt stapelt op: elke maand uitstel verdubbelt de herstelkosten gemiddeld met 20–40%.'
+    ];
+    footer = 'Met een team van gemiddelde omvang lopen deze posten snel op tot tienduizenden euro\'s per jaar — structureel en onzichtbaar.';
+  } else if (total < 60) {
+    title = 'Waar de winst nu weglekt';
+    body = 'Een score van ' + total + '% betekent: de technische basis is er, maar ' + worstName.toLowerCase() + ' en ' + secondName.toLowerCase() + ' remmen de output. Dat vertaalt zich direct naar vertraging en gemiste kansen.';
+    items = [
+      'Een techteam dat 10% voorspelbaarder levert geeft stakeholders en management rust — minder brandjes, minder overuren, minder herstelkosten.',
+      'Onbetrouwbare sprint planning betekent structureel overcommitment. Eén gemiste oplevering kost een manager minstens een dag bijsturing en stakeholder-management.',
+      'Silo-gedrag in een techteam verlaagt de codekwaliteit en vergroot de bus factor — het risico dat één vertrek een heel systeem plat legt.'
+    ];
+    footer = 'Dit zijn geen eenmalige verliezen. Ze herhalen zich elke sprint zolang de onderstroom niet wordt aangepakt.';
+  } else if (total < 75) {
+    title = 'De winst die net buiten bereik ligt';
+    body = 'Met een score van ' + total + '% levert ' + (company ? 'het team van ' + company : name ? 'het team van ' + name : 'jullie techteam') + ' solide — maar op ' + worstName.toLowerCase() + ' is er aantoonbaar resultaat te pakken. Kleine verbeteringen hebben hier een relatief groot effect.';
+    items = [
+      'Betere delivery predictability leidt tot minder verrassingen richting stakeholders — en hogere waardering van het team zonder extra mensen.',
+      'Eén dimensie omhoog brengen levert direct zichtbare impact: snellere releases, minder bugs in productie, betere samenwerking.',
+      'Teams in dit segment laten gemiddeld 10–20% capaciteit liggen op specifieke punten die met één gerichte interventie te pakken zijn.'
+    ];
+    footer = 'De basis staat — de vraag is alleen: pak je die winst nu, of laat je hem nog een kwartaal liggen?';
+  } else {
+    title = 'Sterk nu — maar hoe borgen jullie dat?';
+    body = 'Een score van ' + total + '% is indrukwekkend. De uitdaging voor techteams op dit niveau is niet repareren — het is borgen. Want consistentie onder druk en bij teamwisselingen is waar de meeste sterke teams uiteindelijk verlies lijden.';
+    items = [
+      'Verloop bij senior developers kost onevenredig veel: zij nemen architectuurkennis, klantcontext en teamdynamiek mee.',
+      'Zonder structurele spiegel verdwijnt de urgentie om te reflecteren — totdat er een productie-incident of een groot project misgaat.',
+      'Teams die de RI-methode zelf beheersen presteren consistenter, ook bij onboarding van nieuwe mensen of een verandering van tech stack.'
+    ];
+    footer = 'De investering zit hier niet in repareren — maar in het vastleggen van wat jullie nu goed doen, zodat het stand houdt.';
+  }
+
+  var iconSvg = '<svg viewBox="0 0 12 12"><polygon points="6,1 11,10 1,10"/></svg>';
+
+  var itemsHtml = items.map(function(item) {
+    return '<div class="finance-hook-item"><div class="finance-hook-item-icon">' + iconSvg + '</div><span>' + item + '</span></div>';
+  }).join('');
+
+  document.getElementById('financeHook').innerHTML =
+    '<div class="finance-hook-label">Financiële impact</div>' +
+    '<h4>' + title + '</h4>' +
+    '<div class="finance-hook-text">' + body + '</div>' +
+    '<div class="finance-hook-items">' + itemsHtml + '</div>' +
+    '<div class="finance-hook-divider"></div>' +
+    '<div class="finance-hook-footer">' + footer + '</div>';
 }
 
 function openMailTo(e) {
